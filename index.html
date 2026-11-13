@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARTAXIAD – Situs Resmi</title>
+<meta name="description" content="Situs resmi ARTAXIAD: musik, jadwal tour, berita, media, dan merchandise.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+:root{--black:#000;--red:#D62420;--white:#fff;--r:24px;--font:"Martian Mono",ui-monospace,Menlo,Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--black);color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.vp{position:fixed;inset:0;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+.stage{position:relative;width:100%;height:100%;border-radius:var(--r);background:radial-gradient(ellipse at 30% 70%,#4a0d0b,#000 65%)}
+.stage>video,.stage>canvas,.shade{position:absolute;inset:0;width:100%;height:100%}
+.stage>video{object-fit:cover}
+.stage>video,.stage>canvas,.shade,.fogcss{border-radius:var(--r)}
+.shade{background:linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,.1) 45%,rgba(0,0,0,.35))}
+#fog{pointer-events:none}
+.fogcss{display:none;position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.fogcss i{position:absolute;width:80%;height:80%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),transparent 65%);filter:blur(40px);animation:drift 28s ease-in-out infinite alternate}
+.fogcss i:nth-child(2){right:-20%;bottom:-20%;animation-duration:36s;background:radial-gradient(circle,rgba(214,36,32,.35),transparent 65%)}
+@keyframes drift{from{transform:translate(-10%,-5%)}to{transform:translate(25%,15%)}}
+.nogl #fog{display:none}.nogl .fogcss{display:block}
+/* tab hitam yang menyatu dengan bingkai */
+.tab{position:absolute;background:var(--black);z-index:5}
+.tab::before,.tab::after{content:"";position:absolute;width:var(--r);height:var(--r);pointer-events:none}
+.tl{top:0;left:0;border-bottom-right-radius:var(--r);padding:12px 16px 16px 12px}
+.tl::before{left:100%;top:0}.tl::after{left:0;top:100%}
+.tl::before,.tl::after{background:radial-gradient(circle at 100% 100%,transparent var(--r),var(--black) calc(var(--r) + .5px))}
+.tr{top:0;right:0;border-bottom-left-radius:var(--r);padding:26px 32px 28px 36px}
+.tr::before{right:100%;top:0}.tr::after{right:0;top:100%}
+.tr::before,.tr::after{background:radial-gradient(circle at 0 100%,transparent var(--r),var(--black) calc(var(--r) + .5px))}
+.bl{bottom:0;left:0;border-top-right-radius:var(--r);padding:16px 18px 12px 14px;font-size:11px}
+.bl::before{left:100%;bottom:0}.bl::after{left:0;bottom:100%}
+.bl::before,.bl::after{background:radial-gradient(circle at 100% 0,transparent var(--r),var(--black) calc(var(--r) + .5px))}
+.br{bottom:0;right:0;border-top-left-radius:var(--r);padding:16px 18px 12px 24px;font-size:11px;display:flex;gap:18px}
+.br::before{right:100%;bottom:0}.br::after{right:0;bottom:100%}
+.br::before,.br::after{background:radial-gradient(circle at 0 0,transparent var(--r),var(--black) calc(var(--r) + .5px))}
+.br a:hover{color:var(--red)}
+.logo{display:block;width:84px;height:84px;object-fit:contain}
+.menu{display:flex;gap:32px;margin:0;padding:0;list-style:none;font-size:16px;text-transform:uppercase}
+.menu a{padding:6px 0;border-bottom:3px solid transparent;transition:border-color .2s}
+.menu a:hover,.menu a[aria-current="page"]{border-color:var(--red)}
+.burger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;padding:0;background:none;border:0;cursor:pointer}
+.burger span{display:block;width:26px;height:2px;background:var(--white);border-radius:2px}
+.sheet{position:fixed;inset:0;z-index:30;background:var(--black);display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 10vw;transform:translateX(-100%);visibility:hidden;transition:transform .55s cubic-bezier(.77,0,.18,1),visibility 0s linear .55s}
+.sheet.open{transform:translateX(0);visibility:visible;transition:transform .55s cubic-bezier(.77,0,.18,1),visibility 0s}
+.sheet a{font:700 clamp(28px,9vw,44px)/1.25 var(--font)}
+.sheet a:hover,.sheet a[aria-current="page"]{color:var(--red)}
+.sheet button{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);right:24px;background:none;border:1px solid rgba(255,255,255,.4);color:var(--white);border-radius:99px;height:34px;padding:0 16px;font:400 11px var(--font);cursor:pointer}
+/* hero */
+.hero{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 16px}
+.hero h1{margin:0;line-height:0;animation:in 1.6s cubic-bezier(.2,.7,.2,1) both}
+.hero h1 img{display:block;width:clamp(280px,70vw,1020px);height:auto;margin:0 auto;filter:drop-shadow(0 4px 40px rgba(0,0,0,.45))}
+@keyframes in{from{opacity:0;filter:blur(24px)}to{opacity:1;filter:blur(0)}}
+/* tombol */
+.pill{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 22px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--white);font:400 12px var(--font);text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s}
+.pill:hover{background:var(--white);color:var(--black)}
+.pill.red{background:var(--red);border-color:var(--red)}
+.pill.red:hover{background:var(--white);border-color:var(--white);color:var(--black)}
+.cta{position:absolute;right:20px;bottom:64px;display:flex;gap:12px;z-index:3}
+.card{position:absolute;left:20px;bottom:64px;z-index:3;width:min(350px,calc(100% - 40px));display:flex;gap:12px;padding:10px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.cover{flex:none;display:block;width:78px;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#000}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+.card small{display:block;margin:4px 0 8px;font-size:10px;line-height:1.45;opacity:.85}
+.card .pill{height:30px;padding:0 16px;font-size:10px}
+
+/* popup follow */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);transition:opacity .45s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease,visibility 0s linear .45s}
+.modal.open{opacity:1;visibility:visible;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:opacity .45s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease,visibility 0s}
+.modal-box{position:relative;width:min(460px,100%);max-height:calc(100dvh - 40px);overflow:auto;background:#000;border:1px solid rgba(255,255,255,.14);border-top:3px solid var(--red);border-radius:var(--r);padding:40px 26px 28px;opacity:0;transform:translateY(28px) scale(.96);transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .45s ease}
+.modal.open .modal-box{opacity:1;transform:none}
+.modal-x{position:absolute;top:12px;right:12px;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:none;color:var(--white);cursor:pointer;transition:background .25s,border-color .25s,transform .35s}
+.modal-x:hover{background:var(--red);border-color:var(--red);transform:rotate(90deg)}
+.modal section+section{margin-top:28px}
+.modal h2{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;opacity:.7}
+.row{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .5s cubic-bezier(.2,.8,.2,1),background .25s,color .25s,border-color .25s}
+.modal.open .row{opacity:1;transform:none;transition-delay:calc(.15s + var(--i) * .06s),calc(.15s + var(--i) * .06s),0s,0s,0s}
+.modal.open .row:hover{transition-delay:0s}
+.link{display:flex;align-items:center;gap:14px;height:52px;padding:0 18px;border:1px solid rgba(255,255,255,.22);border-radius:14px;font-size:12px;text-transform:uppercase}
+.link i{width:20px;text-align:center;font-size:18px}
+.link .go{width:auto;margin-left:auto;font-size:11px;opacity:.7}
+.link:hover{background:var(--white);border-color:var(--white);color:var(--black)}
+.link.main{background:var(--red);border-color:var(--red)}
+.link.main:hover{background:var(--white);border-color:var(--white)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.grid{grid-template-columns:1fr}}
+
+/* preloader */
+.pre{position:fixed;inset:0;z-index:100;background:#000;display:grid;place-items:center;transition:opacity .6s ease,visibility .6s}
+.pre.done{opacity:0;visibility:hidden}
+.pre-in{position:relative;width:clamp(220px,40vmin,340px);aspect-ratio:1;display:grid;place-items:center}
+.pre-in img{width:60%;height:60%;object-fit:contain;animation:prePulse 3.2s cubic-bezier(.45,0,.55,1) infinite;will-change:transform,opacity}
+.pre-in svg{position:absolute;width:100%;height:100%}
+.pre-in .ring-a{inset:0;animation:preSpin 1.6s linear infinite}
+.pre-in .ring-b{inset:9%;width:82%;height:82%;animation:preSpinRev 2.2s linear infinite}
+.pre-in circle{fill:none;stroke-linecap:round}
+.ring-a circle{stroke:var(--red);stroke-width:2.5;stroke-dasharray:110 192}
+.ring-b circle{stroke:rgba(255,255,255,.85);stroke-width:2;stroke-dasharray:70 232}
+@keyframes preSpin{to{transform:rotate(360deg)}}
+@keyframes preSpinRev{to{transform:rotate(-360deg)}}
+@keyframes prePulse{0%,100%{opacity:.7;transform:scale(.97)}50%{opacity:1;transform:scale(1.02)}}
+.loading .hero h1{animation-play-state:paused}
+@media(max-width:820px){
+  .menu{display:none}.burger{display:flex}
+  .tl,.tr{width:92px;height:92px;padding:0;display:flex;align-items:center;justify-content:center}
+  .tl{padding:0 6px 6px 0}
+  .tr{padding:0 0 6px 6px}
+  .bl{font-size:9px;padding:14px 14px 10px 14px}
+  .br{font-size:9px;gap:10px;padding:14px 14px 10px 18px}
+  .cta{right:auto;left:50%;transform:translateX(-50%);top:auto;bottom:48px;gap:8px}
+  .cta .pill{height:34px;padding:0 14px;font-size:10px}
+  .logo{width:64px;height:64px}
+  .card{bottom:92px;left:16px;width:min(320px,calc(100% - 32px))}
+  .card .cover{width:64px;font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="loading">
+<div class="pre" id="pre" aria-hidden="true">
+  <div class="pre-in">
+    <svg class="ring-a" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
+    <svg class="ring-b" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
+    <img src="img/circle-logo.png" alt="">
+  </div>
+</div>
+
+<div class="vp">
+<div class="stage" id="stage">
+
+  <!-- 1. Video latar: boleh di video/bg.mp4 atau bg.mp4 (sejajar index.html) (foto cadangan: img/poster.jpg) -->
+  <video id="bg" autoplay muted loop playsinline preload="metadata" poster="img/poster.jpg" aria-hidden="true">
+    <source src="video/bg.mp4" type="video/mp4">
+    <source src="bg.mp4" type="video/mp4">
+  </video>
+  <div class="shade"></div>
+
+  <!-- 2. Efek kaca berembun dan tetesan air (dilap dengan kursor atau jari) -->
+  <canvas id="fog" aria-hidden="true"></canvas>
+  <div class="fogcss" aria-hidden="true"><i></i><i></i></div>
+
+  <div class="hero">
+    <h1><img src="img/logo.png" alt="ARTAXIAD"></h1>
+  </div>
+
+  <a class="tab tl" href="#" aria-label="ARTAXIAD, beranda">
+    <img class="logo" src="img/circle-logo.png" alt="">
+  </a>
+
+  <nav class="tab tr" aria-label="Menu utama">
+<ul class="menu">
+      <li><a href="#" aria-current="page">Home</a></li>
+      <li><a href="perform.html">Perform</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="merch.html">Merch</a></li>
+    </ul>
+    <button class="burger" id="open" aria-label="Buka menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="cta">
+    <button class="pill" id="openFollow" type="button">Follow</button>
+    <a class="pill" href="#">Subscribe</a>
+  </div>
+
+  <div class="card">
+    <a class="cover" href="https://www.youtube.com/watch?v=rOLVCdr5AdE" target="_blank" rel="noopener" aria-label="Putar Pyrophobic di YouTube">
+      <img src="https://i.ytimg.com/vi/rOLVCdr5AdE/maxresdefault.jpg" alt="" loading="lazy">
+    </a>
+    <div>
+      <b>Pyrophobic</b>
+      <small>Artaxiad Gamelan.</small>
+      <a class="pill red" href="https://www.youtube.com/watch?v=rOLVCdr5AdE" target="_blank" rel="noopener"><i class="fa-solid fa-play" aria-hidden="true"></i> Play Now</a>
+    </div>
+  </div>
+
+  <div class="tab bl">© 2026 ARTAXIAD</div>
+  <div class="tab br"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
+</div>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-box">
+    <button class="modal-x" id="mClose" type="button" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+
+    <section>
+      <h2 class="row" id="mTitle" style="--i:0">Listen</h2>
+      <a class="link main row" style="--i:1" href="https://open.spotify.com/intl-id/artist/23QCPAlvzfpBvWV6s8SQoL" target="_blank" rel="noopener">
+        <i class="fa-brands fa-spotify"></i>Listen on Spotify<i class="fa-solid fa-arrow-up-right-from-square go"></i>
+      </a>
+    </section>
+
+    <section>
+      <h2 class="row" style="--i:2">Follow</h2>
+      <div class="grid">
+        <a class="link row" style="--i:3" href="https://www.instagram.com/artaxiadgamelan/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i>Instagram</a>
+        <a class="link row" style="--i:4" href="https://www.youtube.com/@artaxiadgamelanofficial2780" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i>YouTube</a>
+        <a class="link row" style="--i:5" href="https://www.facebook.com/artaxiadgamelan/" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i>Facebook</a>
+        <a class="link row" style="--i:6" href="https://www.tiktok.com/@artaxiadgamelan" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i>TikTok</a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-label="Menu">
+  <button id="close">Close</button>
+  <a href="#" aria-current="page">Home</a><a href="perform.html">Perform</a><a href="news.html">News</a><a href="music.html">Music</a><a href="media.html">Media</a><a href="merch.html">Merch</a>
+</div>
+
+<script>
+(function(){
+  var sheet=document.getElementById("sheet");
+  document.getElementById("open").onclick=function(){sheet.classList.add("open")};
+  document.getElementById("close").onclick=function(){sheet.classList.remove("open")};
+
+  var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var saver=navigator.connection&&navigator.connection.saveData;
+  var vid=document.getElementById("bg");
+  if(saver||reduce){vid.removeAttribute("autoplay");vid.pause();[].forEach.call(vid.querySelectorAll("source"),function(x){x.removeAttribute("src")});vid.load()}
+  var srcs=vid.querySelectorAll("source");function hideVid(){vid.style.display="none"}
+  srcs[srcs.length-1].addEventListener("error",hideVid);vid.addEventListener("error",hideVid);
+
+  var cv=document.getElementById("fog"),stage=document.getElementById("stage");
+  var gl=cv.getContext("webgl",{alpha:true,premultipliedAlpha:true,antialias:false});
+  if(!gl){document.body.classList.add("nogl");return}
+
+  /* Efek kaca berembun: embun + tetesan air. Kursor/jari mengelap kaca, embun muncul lagi perlahan. */
+  var vs="attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+  var fs=`
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform sampler2D uV,uM;uniform vec2 uR,vs;uniform float t,uTex;
+float h2(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
+/* garis air panjang: kepala tetesan merayap turun, jalur bening berkelok di belakangnya.
+   return: x = posisi melintang di dalam garis (-1..1), y = kekuatan jalur, z = kepala tetesan, w = arah normal kepala */
+vec4 streak(vec2 q,float cols,float seed){
+  float colw=1./cols;
+  vec2 g=vec2(q.x*cols,0.);
+  float id=floor(g.x);
+  vec2 sid=vec2(id,seed);
+  float a=h2(sid),b=h2(sid+3.7),c=h2(sid+8.1),s=h2(sid+13.3),bl=.6+.7*h2(sid+19.9);
+  if(a>.72)return vec4(0.);
+  float v=q.y/bl+c*7.;
+  float sg=floor(v),vf=fract(v);
+  vec2 gid=vec2(id+sg*31.7,seed+5.);
+  if(h2(gid)>.8)return vec4(0.);
+  float prog=fract(t*(.012+.02*s)+h2(gid+2.2));
+  float hp=1.-prog;
+  float fade=smoothstep(0.,.04,prog)*smoothstep(1.,.9,prog);
+  float cx=(id+.5)*colw+(b-.5)*colw*.35+.0010*sin(q.y*7.+c*6.28);
+  float w=(.0042+.0048*c);
+  float dist=max(vf-hp,0.)*bl;
+  float wd=w*mix(1.,.5,clamp(dist/.6,0.,1.));
+  float dx=q.x-cx;
+  float u=clamp(dx/wd,-1.,1.);
+  float tm=smoothstep(1.,.7,abs(dx/wd))*step(hp,vf)*smoothstep(1.,.96,vf)*fade;
+  float headY=(sg+hp-c*7.)*bl;
+  vec2 hd=vec2(dx,(q.y-headY)*.75);
+  float rh=w*1.7+.002;
+  float head=smoothstep(rh,rh*.55,length(hd))*fade;
+  return vec4(u*tm+hd.x/rh*head*.6,tm,head,0.);
+}
+/* bintik embun kecil */
+vec3 beads(vec2 uv,float sc,float dens,float rmax){
+  vec2 g=uv*sc,id=floor(g),f=fract(g)-.5;
+  if(h2(id)>dens)return vec3(0.);
+  vec2 o=(vec2(h2(id+3.3),h2(id+9.1))-.5)*.5;
+  float s=h2(id+5.7),rad=rmax*(.12+.88*s*s*s);
+  vec2 d=f-o;
+  float body=smoothstep(rad,rad*.45,length(d));
+  return vec3(d/rad*body*.8,body);
+}
+/* noise halus untuk bercak embun tebal-tipis */
+float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1.,0.)),f.x),mix(h2(i+vec2(0.,1.)),h2(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 p){return .5*n2(p)+.25*n2(p*2.1)+.125*n2(p*4.3)+.0625*n2(p*8.7);}
+vec3 samp(vec2 u){return texture2D(uV,(u-.5)*vs+.5).rgb;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/uR;float asp=uR.x/uR.y;vec2 q=vec2(uv.x*asp,uv.y);
+  vec4 s1=streak(q,22.,1.),s2=streak(q+vec2(.021,0.),15.,9.),s3=streak(q+vec2(.013,0.),11.,17.);
+  vec3 b0=beads(q+5.5,12.,.12,.2),b1=beads(q+3.1,24.,.4,.22),b2=beads(q+11.3,44.,.65,.25),b3=beads(q+23.9,84.,.75,.25),b4=beads(q+37.7,120.,.8,.25);
+  vec2 n=vec2(s1.x+s2.x+s3.x,0.)+b0.xy+b1.xy+b2.xy+b3.xy+b4.xy;
+  float tr=clamp(s1.y+s2.y+s3.y,0.,1.);
+  float hd=clamp(s1.z+s2.z+s3.z,0.,1.);
+  float dm=clamp(b0.z+b1.z+b2.z+b3.z+b4.z+hd,0.,1.);
+  float wet=smoothstep(0.,1.,1.-texture2D(uM,uv).r);
+  float band=.9+.1*sin(q.x*38.+sin(q.x*13.)*2.);
+  float pch=.7+.6*fbm(q*3.+7.);
+  n*=wet;dm*=wet;tr*=wet;
+  float ln=length(n);if(ln>1.1)n*=1.1/ln;
+  float clearAmt=clamp(max(dm*.85,tr*.9),0.,1.);
+  vec3 nn=normalize(vec3(n,.9));
+  float spec=pow(max(dot(nn,normalize(vec3(-.4,.6,.7))),0.),90.)*dm*.9;
+  float edge=smoothstep(.5,1.,length(n))*max(dm,tr)*.38;
+  if(uTex>.5){
+    float ang=h2(gl_FragCoord.xy)*6.2832;
+    float br=.017*wet*band*pch;
+    vec3 fogc=samp(uv)*.22;
+    for(int i=0;i<8;i++){
+      float a=float(i)*.7854+ang;
+      vec2 o=vec2(cos(a)*.8/asp,sin(a)*1.5);
+      fogc+=samp(uv+o*br)*.06+samp(uv+o*br*2.)*.0375;
+    }
+    fogc=mix(fogc,vec3(.78,.80,.82),.15*wet*pch);
+    float micro=h2(floor(gl_FragCoord.xy*.7));
+    fogc*=1.+(micro-.5)*.07*wet;
+    vec3 col=mix(fogc,samp(uv-n*.024)*1.1,clearAmt);
+    float rim=smoothstep(.55,1.,length(n))*max(dm,tr);
+    col*=1.-rim*.35*max(n.y,0.)-edge*.5;
+    col+=rim*.22*max(-n.y,0.)+spec;
+    col*=mix(.65,1.,smoothstep(0.,.45,uv.y));
+    gl_FragColor=vec4(col,1.);
+  }else{
+    float aW=clamp(.3*wet*(1.-clearAmt)+spec,0.,1.);
+    gl_FragColor=vec4(vec3(aW),aW+edge*.9*(1.-aW));
+  }
+}`;
+  function sh(type,src){var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s}
+  var pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){document.body.classList.add("nogl");return}
+  gl.useProgram(pr);
+  var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  var loc=gl.getAttribLocation(pr,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  var U={};["uV","uM","uR","vs","t","uTex"].forEach(function(k){U[k]=gl.getUniformLocation(pr,k)});
+  gl.uniform1i(U.uV,0);gl.uniform1i(U.uM,1);
+  gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  function mkTex(){var x=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,x);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);return x}
+  var tV=mkTex(),tM=mkTex();
+
+  // kanvas kecil sebagai "peta bagian kaca yang sudah dilap"
+  var mask=document.createElement("canvas"),mctx=mask.getContext("2d"),mw=256,mh=144,brush=15;
+  var sprite=document.createElement("canvas");sprite.width=sprite.height=64;
+  var sg=sprite.getContext("2d"),gr=sg.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,"#fff");gr.addColorStop(.65,"#fff");gr.addColorStop(1,"rgba(255,255,255,0)");
+  sg.fillStyle=gr;sg.fillRect(0,0,64,64);
+
+  function size(){
+    var s=innerWidth<820?.55:.75,w=stage.clientWidth,h=stage.clientHeight;
+    cv.width=Math.max(2,Math.round(w*s));cv.height=Math.max(2,Math.round(h*s));
+    gl.viewport(0,0,cv.width,cv.height);
+    if(w>=h){mw=256;mh=Math.max(2,Math.round(256*h/w))}else{mh=256;mw=Math.max(2,Math.round(256*w/h))}
+    mask.width=mw;mask.height=mh;
+  }
+  size();addEventListener("resize",size);
+
+  // jejak lap: bersih sekitar 2 detik, lalu embun kembali perlahan
+  var pts=[],last=null,LIFE=7000,HOLD=2000;
+  function add(x,y){
+    var b=stage.getBoundingClientRect(),X=(x-b.left)/b.width,Y=(y-b.top)/b.height,now=performance.now();
+    if(last){
+      var dx=X-last.x,dy=Y-last.y,d=Math.sqrt(dx*dx+dy*dy),k=Math.min(12,Math.floor(d/.015));
+      for(var i=1;i<=k;i++)pts.push({x:last.x+dx*i/(k+1),y:last.y+dy*i/(k+1),t:now});
+    }
+    last={x:X,y:Y};pts.push({x:X,y:Y,t:now});
+    if(pts.length>220)pts.splice(0,pts.length-220);
+  }
+  if(!reduce){
+    addEventListener("pointermove",function(e){add(e.clientX,e.clientY)},{passive:true});
+    addEventListener("pointerleave",function(){last=null});
+    addEventListener("pointerup",function(){last=null});
+  }
+
+  var texOK=false,texBad=false,t0=performance.now();
+  function frame(now){
+    pts=pts.filter(function(p){return now-p.t<LIFE});
+    mctx.globalAlpha=1;mctx.fillStyle="#000";mctx.fillRect(0,0,mw,mh);
+    var r=brush*mw/256*(mw>=mh?1:1);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i],age=now-p.t,a=age<HOLD?1:1-(age-HOLD)/(LIFE-HOLD);
+      mctx.globalAlpha=Math.max(0,a);
+      mctx.drawImage(sprite,p.x*mw-r,p.y*mh-r,r*2,r*2);
+    }
+    mctx.globalAlpha=1;
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,tM);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,mask);
+
+    // video sebagai tekstur (dibiasakan membiaskan cahaya lewat tetesan). Bisa gagal jika dibuka dari file lokal.
+    if(!texBad&&vid.readyState>=2&&vid.videoWidth){
+      try{
+        gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tV);
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,vid);
+        texOK=true;
+      }catch(e){texBad=true;texOK=false}
+    }
+    var ca=cv.width/cv.height,va=texOK?vid.videoWidth/vid.videoHeight:1;
+    gl.uniform2f(U.vs,ca>va?1:ca/va,ca>va?va/ca:1);
+    gl.uniform1f(U.uTex,texOK?1:0);
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform2f(U.uR,cv.width,cv.height);
+    gl.uniform1f(U.t,reduce?0:(now-t0)/1000);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var pre=document.getElementById("pre"),vid=document.getElementById("bg");
+  var start=performance.now(),MIN=1400,MAX=6000,finished=false,pageOk=false,vidOk=false;
+  var skipVid=(navigator.connection&&navigator.connection.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function finish(){
+    if(finished)return;finished=true;
+    var wait=Math.max(0,MIN-(performance.now()-start));
+    setTimeout(function(){
+      pre.classList.add("done");
+      document.body.classList.remove("loading");
+      setTimeout(function(){pre.remove()},900);
+    },wait);
+  }
+  function check(){if(pageOk&&vidOk)finish()}
+
+  if(document.readyState==="complete")pageOk=true;
+  else addEventListener("load",function(){pageOk=true;check()});
+
+  if(skipVid||vid.readyState>=3)vidOk=true;
+  else{
+    ["canplay","loadeddata","error"].forEach(function(ev){
+      vid.addEventListener(ev,function(){vidOk=true;check()});
+    });
+  }
+  check();
+  setTimeout(finish,MAX);
+})();
+</script>
+
+<script>
+(function(){
+  var m=document.getElementById("modal"),openB=document.getElementById("openFollow"),closeB=document.getElementById("mClose"),lastFocus=null;
+  function openM(){lastFocus=document.activeElement;m.classList.add("open");setTimeout(function(){closeB.focus()},60)}
+  function closeM(){m.classList.remove("open");if(lastFocus)lastFocus.focus()}
+  openB.addEventListener("click",openM);
+  closeB.addEventListener("click",closeM);
+  m.addEventListener("click",function(e){if(e.target===m)closeM()});
+  addEventListener("keydown",function(e){if(e.key==="Escape"&&m.classList.contains("open"))closeM()});
+})();
+</script>
+</body>
+</html>
