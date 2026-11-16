@@ -63,9 +63,9 @@ a{color:inherit;text-decoration:none}
 .sheet button{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);right:24px;background:none;border:1px solid rgba(255,255,255,.4);color:var(--white);border-radius:99px;height:34px;padding:0 16px;font:400 11px var(--font);cursor:pointer}
 /* hero */
 .hero{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 16px}
-.hero h1{margin:0;line-height:0;animation:in 1.6s cubic-bezier(.2,.7,.2,1) both}
+.hero h1{margin:0;line-height:0;animation:in 1.6s cubic-bezier(.2,.7,.2,1) both;will-change:transform,opacity}
 .hero h1 img{display:block;width:clamp(280px,70vw,1020px);height:auto;margin:0 auto;filter:drop-shadow(0 4px 40px rgba(0,0,0,.45))}
-@keyframes in{from{opacity:0;filter:blur(24px)}to{opacity:1;filter:blur(0)}}
+@keyframes in{from{opacity:0;transform:scale(1.15)}to{opacity:1;transform:none}}
 /* tombol */
 .pill{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 22px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--white);font:400 12px var(--font);text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s}
 .pill:hover{background:var(--white);color:var(--black)}
@@ -122,7 +122,7 @@ a{color:inherit;text-decoration:none}
   .burger{width:34px;height:34px;gap:4px}
   .burger span{width:20px}
   .bl{font-size:9px;padding:14px 14px 10px 14px}
-  .br{font-size:9px;gap:10px;padding:14px 14px 10px 18px}
+  .br{font-size:9px;gap:4px;padding:12px 14px 10px 18px;flex-direction:column;align-items:flex-end}
   .cta{right:auto;left:50%;transform:translateX(-50%);top:auto;bottom:48px;gap:8px}
   .cta .pill{height:34px;padding:0 14px;font-size:10px}
   .logo{width:46px;height:46px}
@@ -358,7 +358,7 @@ void main(){
   sg.fillStyle=gr;sg.fillRect(0,0,64,64);
 
   function size(){
-    var s=innerWidth<820?.55:.75,w=stage.clientWidth,h=stage.clientHeight;
+    var s=innerWidth<820?.4:.55,w=stage.clientWidth,h=stage.clientHeight;
     cv.width=Math.max(2,Math.round(w*s));cv.height=Math.max(2,Math.round(h*s));
     gl.viewport(0,0,cv.width,cv.height);
     if(w>=h){mw=256;mh=Math.max(2,Math.round(256*h/w))}else{mh=256;mw=Math.max(2,Math.round(256*w/h))}
@@ -385,6 +385,8 @@ void main(){
 
   var texOK=false,texBad=false,t0=performance.now();
   function frame(now){
+    if(document.body.classList.contains("loading")||now-(frame.l||0)<33){requestAnimationFrame(frame);return}
+    frame.l=now;
     pts=pts.filter(function(p){return now-p.t<LIFE});
     mctx.globalAlpha=1;mctx.fillStyle="#000";mctx.fillRect(0,0,mw,mh);
     var r=brush*mw/256*(mw>=mh?1:1);
@@ -420,8 +422,8 @@ void main(){
 <script>
 (function(){
   var pre=document.getElementById("pre"),vid=document.getElementById("bg");
-  var start=performance.now(),MIN=1400,MAX=6000,finished=false,pageOk=false,vidOk=false;
-  var skipVid=(navigator.connection&&navigator.connection.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var start=performance.now(),MIN=800,MAX=2500,finished=false,pageOk=false,vidOk=false;
+  var skipVid=true;
 
   function finish(){
     if(finished)return;finished=true;
