@@ -50,6 +50,7 @@ a{color:inherit;text-decoration:none}
 .br::after{right:0;bottom:calc(100% - 1px);width:var(--r);height:calc(var(--r) + 1px)}
 .br::before,.br::after{background:radial-gradient(circle at 0 0,transparent var(--r),var(--black) calc(var(--r) + .5px))}
 .br a:hover{color:var(--red)}
+.br .cp{display:none}
 .logo{display:block;width:84px;height:84px;object-fit:contain}
 .menu{display:flex;gap:32px;margin:0;padding:0;list-style:none;font-size:16px;text-transform:uppercase}
 .menu a{padding:6px 0;border-bottom:3px solid transparent;transition:border-color .2s}
@@ -122,7 +123,9 @@ a{color:inherit;text-decoration:none}
   .burger{width:34px;height:34px;gap:4px}
   .burger span{width:20px}
   .bl{font-size:9px;padding:14px 14px 10px 14px}
-  .br{font-size:9px;gap:4px;padding:12px 14px 10px 18px;flex-direction:column;align-items:flex-end}
+  .bl{display:none}
+  .br{font-size:9px;gap:4px 10px;padding:14px 14px 10px 18px;flex-wrap:wrap;justify-content:flex-start}
+  .br .cp{display:block}
   .cta{right:auto;left:50%;transform:translateX(-50%);top:auto;bottom:48px;gap:8px}
   .cta .pill{height:34px;padding:0 14px;font-size:10px}
   .logo{width:46px;height:46px}
@@ -192,7 +195,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="tab bl">© 2026 ARTAXIAD</div>
-  <div class="tab br"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
+  <div class="tab br"><span class="cp">© 2026 ARTAXIAD</span><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
 </div>
 </div>
 
